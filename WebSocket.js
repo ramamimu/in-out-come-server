@@ -15,7 +15,7 @@ export class WebSocket {
     const SERVER = Http.createServer(this.APP);
     THAT.socket = new Server(SERVER, {
       cors: {
-        origins: ["http://localhost:5173", "*"],
+        origins: ["*"],
       },
     });
     this.APP.use(Express.json());
