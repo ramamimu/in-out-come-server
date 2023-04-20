@@ -24,6 +24,10 @@ export class WebSocket {
     SERVER.listen(THAT.port, () => {
       console.log(`listening on port socket: ${THAT.port}`);
     });
+
+    this.APP.get("/", (req, res) => {
+      res.send("Hello World!");
+    });
   }
 
   emitData(emitter, data) {
