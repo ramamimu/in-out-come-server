@@ -17,6 +17,7 @@ export class WebSocket {
       cors: {
         origins: ["*"],
       },
+      pingTimeout: 60000,
     });
     this.APP.use(Express.json());
     this.APP.use(Express.urlencoded({ extended: true }));

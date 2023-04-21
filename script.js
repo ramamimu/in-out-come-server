@@ -7,30 +7,30 @@ import { addData, deleteData, editData } from "./Firetools.js";
 const IO = new WebSocket();
 const colRef = collection(db, "MoneyTracker");
 
-onSnapshot(colRef, (querySnapshot) => {
+onSnapshot(colRef, async (querySnapshot) => {
   let temp = [];
   querySnapshot.docs.forEach((doc) => {
     temp.push({ id: doc.id, ...doc.data() });
   });
   IO.data = temp;
-  IO.emitData(Emitter.data2UI, temp);
-  IO.emitData(Emitter.income, IO.getDailyInOut(0));
-  IO.emitData(Emitter.outcome, IO.getDailyInOut(1));
+  await IO.emitData(Emitter.data2UI, temp);
+  await IO.emitData(Emitter.income, IO.getDailyInOut(0));
+  await IO.emitData(Emitter.outcome, IO.getDailyInOut(1));
 });
 
-IO.socket.of("/chart").on("connection", (socket) => {
-  console.log("a user connected");
+IO.socket.of("/chart").on("connection", async (socket) => {
+  console.log("a user connected ", socket.id);
 
-  socket.on(Emitter.data2Server, (msg) => {
+  await socket.on(Emitter.data2Server, (msg) => {
     console.log("chat message ", msg);
   });
 
-  socket.emit(Emitter.data2UI, IO.data);
-  socket.emit(Emitter.income, IO.getDailyInOut(0));
-  socket.emit(Emitter.outcome, IO.getDailyInOut(1));
+  await socket.emit(Emitter.data2UI, IO.data);
+  await socket.emit(Emitter.income, IO.getDailyInOut(0));
+  await socket.emit(Emitter.outcome, IO.getDailyInOut(1));
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log("user disconnected ", socket.id);
   });
 });
 
